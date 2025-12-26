@@ -1,6 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
 
+echo ----------------------------------------
+echo This might take a while depending on your internet speed...
+echo ----------------------------------------
+TIMEOUT /T 5
+
 echo Checking dependencies...
 
 :: Check for CMake
@@ -24,11 +29,6 @@ if %errorlevel% neq 0 (
 ) else (
     echo [OK] Ninja is already installed.
 )
-
-echo ----------------------------------------
-echo This might take a while depending on your internet speed...
-echo ----------------------------------------
-TIMEOUT /T 5
 
 :: Run Build Commands
 cmake -G "Ninja" -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON

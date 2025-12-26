@@ -26,17 +26,36 @@ target_link_directories(${PROJECT_NAME} PRIVATE
     "${phynixengine_SOURCE_DIR}/External Dependancys/GameNetworkingSockets/lib"
 )
 
+# 1. Link the cross-platform libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE
     PhynixEngine
     raylib
-    winmm
-    gdi32
-    opengl32
-    shell32
     box2d
-    GameNetworkingSockets
     rlimgui
 )
+
+# 2. Handle GameNetworkingSockets and System Libs based on OS
+if(WIN32)
+    # Windows-specific library path and system libs
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        "${phynixengine_SOURCE_DIR}/External Dependancys/GameNetworkingSockets/lib/libGameNetworkingSockets.a"
+        winmm
+        gdi32
+        opengl32
+        shell32
+    )
+else()
+    # Linux-specific setup
+    # If the engine provides a Linux .a file, point to it here. 
+    # Otherwise, you may need to install it via: sudo apt install libgamenetworkingsockets-dev
+    find_package(Threads REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        # GameNetworkingSockets  <-- Uncomment this if you installed it on Linux
+        Threads::Threads
+        m
+        dl
+    )
+endif()
 
 # 1. Copy the Engine DLL
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
